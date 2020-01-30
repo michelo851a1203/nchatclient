@@ -123,7 +123,6 @@ export default {
     },
     getemojiObject(val) {
       if (val) {
-        // 這裡要擺在指定的位置。
         const vm = this;
         const edit = vm.$refs.editable;
         const prevNodeNum = vm.editablecurrentNode.prevNodeNum;
@@ -137,19 +136,36 @@ export default {
                 index < prevNodeNum &&
                 item.nodeType == Node.TEXT_NODE &&
                 item.textCOntent !== ""
-            ).length
-            edit.insertBefore(val, edit.children[prevNodeNum - textLen]);
+            ).length;
+            if (
+              edit.childNodes[prevNodeNum] &&
+              edit.childNodes[prevNodeNum].nodeType === Node.TEXT_NODE
+            ) {
+              edit.insertBefore(val, edit.childNodes[prevNodeNum]);
+            } else {
+              if (textLen !== 0) {
+                edit.insertBefore(val, edit.childNodes[prevNodeNum - textLen + 1]);
+              }else{
+                edit.insertBefore(val, edit.childNodes[prevNodeNum]);
+              }
+            }
           }
         } else {
           const txt = edit.childNodes[prevNodeNum].textContent;
-          const p1 = txt.slice(0, textNum);
-          const p2 = txt.slice(textNum, txt.length);
-          const text1 = document.createTextNode(p1);
-          const text2 = document.createTextNode(p2);
-          edit.insertBefore(text1, edit.children[prevNodeNum]);
-          edit.insertBefore(val, edit.children[prevNodeNum + 1]);
-          edit.insertBefore(text2, edit.children[prevNodeNum + 2]);
-          edit.childNodes[prevNodeNum].remove();
+          if (txt.length === textNum) {
+            edit.insertBefore(val, edit.childNodes[prevNodeNum + 1]);
+          } else {
+            // TODO:接下來要檢驗這裡，這裡是文字分開的部分
+            // 文字錢和文字後的問題都解決了。
+            const p1 = txt.slice(0, textNum);
+            const p2 = txt.slice(textNum, txt.length);
+            const text1 = document.createTextNode(p1);
+            const text2 = document.createTextNode(p2);
+            edit.insertBefore(text1, edit.childNodes[prevNodeNum]);
+            edit.insertBefore(val, edit.childNodes[prevNodeNum + 1]);
+            edit.insertBefore(text2, edit.childNodes[prevNodeNum + 2]);
+            edit.childNodes[prevNodeNum].remove();
+          }
         }
       }
     }

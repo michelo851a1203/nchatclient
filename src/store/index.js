@@ -288,9 +288,24 @@ export default new Vuex.Store({
         image.width = 20
         image.classList.add('inline-block')
         commit('SET_APPENDEDEMOJI', image)
-        // 這裡要處理一下 emoji 代號塞入的位置
-        const newMsg = `${state.sendmsg}${payload}`
-        commit('SET_MESSAGE', newMsg)
+        let sendmsgArr = state.sendmsg.split(/(#-EMOJI\d{1,3}EMOJI-#)/g).filter(item => item !== '')
+        const prevNodeNum = state.currentNode.prevNodeNum
+        const textNum = state.currentNode.textNum
+        if (textNum === 0) {
+          sendmsgArr.splice(prevNodeNum, 0, payload)
+        } else {
+          const textNode = sendmsgArr[prevNodeNum]
+          if (textNode.length === textNum) {
+            sendmsgArr.splice(prevNodeNum + 1, 0, payload)
+          } else {
+            sendmsgArr = [
+              ...sendmsgArr.filter((_, index) => index < prevNodeNum),
+              textNode.slice(0, textNum), payload, textNode.slice(textNum, textNode.length),
+              ...sendmsgArr.filter((_, index) => index > prevNodeNum)
+            ]
+          }
+        }
+        commit('SET_MESSAGE', sendmsgArr.join(''))
       }
       setTimeout(() => {
         commit('SET_APPENDEDEMOJI', null)
