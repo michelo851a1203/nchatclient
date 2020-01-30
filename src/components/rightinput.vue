@@ -165,7 +165,7 @@ export default {
 
 .emoji-in-enter {
   opacity: 0;
-  transition:translateY(500px)
+  transition: translateY(500px);
 }
 .emoji-in-enter-active,
 .emoji-in-leave-active {
@@ -173,6 +173,6 @@ export default {
 }
 .emoji-in-leave-to {
   opacity: 0;
-  transition:translateY(500px)
+  transition: translateY(500px);
 }
 </style>

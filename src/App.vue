@@ -40,6 +40,8 @@ import rightimage from "@/components/rightimage.vue";
 import rightnavbar from "@/components/rightnavbar.vue";
 import rightboard from "@/components/rightboard.vue";
 import rightinput from "@/components/rightinput.vue";
+import previewmodal from "@/components/previewmodal.vue";
+import alert from "@/components/alert.vue";
 export default {
   name: "app",
   components: {
@@ -50,7 +52,9 @@ export default {
     rightimage,
     rightnavbar,
     rightboard,
-    rightinput
+    rightinput,
+    previewmodal,
+    alert,
   },
   computed: {
     ...mapGetters(["screenisphone", "activenavlist", "selecteduserId"])
