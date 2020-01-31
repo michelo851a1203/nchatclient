@@ -11,7 +11,7 @@
       v-for="item in chatcontent"
       :key="item.id"
       :class="{'justify-end':item.is_sender}"
-      class="target px-6 py-4 flex items-end"
+      class="target px-6 py-4 flex items-end select-none"
     >
       <div
         :class="{'order-3':item.is_sender,'self-triangle':item.is_sender,'target-triangle':!item.is_sender}"
@@ -22,7 +22,9 @@
         'bg-gray-targetchat':!item.is_sender
         }"
         class="max-w-1/2 sm:max-w-2/3 text-sm sm:text-base rounded-lg px-3 py-2 font-medium break-all"
-      >{{item.msg}}</section>
+      >
+        <span v-for="msgitem in item.msg" :key="msgitem.key" v-html="msgitem.obj"></span>
+      </section>
       <div
         :class="{'order-1':item.is_sender,'mr-3':item.is_sender,'ml-3':!item.is_sender}"
         class="text-sm sm:text-base text-gray-chatdate"
@@ -76,7 +78,7 @@ export default {
       const vm = this;
       vm.$store.dispatch("setcurrentscrollposition", div.scrollTop);
       if (div.scrollTop === 0 && vm.chatcontent.length > 0) {
-        vm.$store.dispatch("getPrevious",vm.chatcontent[0].id);
+        vm.$store.dispatch("getPrevious", vm.chatcontent[0].id);
       }
       const contenth = vm.contentheight;
       const scrollBottom = div.scrollTop + contenth;
@@ -119,7 +121,7 @@ export default {
       const targetBottom = vm.contentscrollheight - val * 0.5;
       if (scrollbottom <= targetBottom) {
         vm.$store.dispatch("set_tobottombuttonshow", true);
-      }else{
+      } else {
         vm.$store.dispatch("set_tobottombuttonshow", false);
       }
 

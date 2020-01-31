@@ -13,7 +13,7 @@
           class="flex justify-between items-center relative text-gray-300 py-2 border-b-2 sm:border-b-0 border-blue-seperator"
         >
           <div
-            class="w-4 h-4 absolute top-0 left-0 mt-2 rounded-full bg-red-pure border-2 border-gray-500"
+            class="w-4 h-4 absolute top-0 left-0 mt-2 rounded-full bg-red-pure border-2 border-gray-500 z-50"
           ></div>
           <div
             v-if="!item.isCustomerService || item.headimage !== require('@/assets/logo_black.png')"

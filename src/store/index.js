@@ -240,26 +240,24 @@ export default new Vuex.Store({
         return item.userid === state.left.userlist.selecteduserid
       })
       // 看來這裡有問題
-      console.log(payload.msg);
       // payload.msg 這裡要處理一下 Emoji
-      const regx = /(#-EMOJI\d{1,3}EMOJI-#)/g
-      const re = /#-EMOJI(\d{1,3})EMOJI-#/g
-      const msgencodeArr = payload.msg.split(regx)
-        .filter(item => item !== '')
-        .map(item => {
-          if (regx.test(item)) {
-            const image = new Image()
-            const num = item.replace(re,'$1')
-            // TODO:這裡做一半。
-            console.log(image,num);
-          }else{
-            return item
-          }
-        })
-      console.log(msgencodeArr);
-
-
-
+      // const regx = /(#-EMOJI\d{1,3}EMOJI-#)/g
+      // const msgencodeArr = payload.msg.split(regx)
+      //   .filter(item => item !== '')
+      //   .map(item => {
+      //     if (/#-EMOJI\d{1,3}EMOJI-#/g.test(item)) {
+      //       const image = new Image()
+      //       const num = item.replace(/#-EMOJI(\d{1,3})EMOJI-#/g, '$1')
+      //       image.src = require(`@/assets/emoji/${num}.svg`)
+      //       image.width = 20
+      //       image.classList.add('inline-block')
+      //       image.classList.add('select-none')
+      //       return image
+      //     } else {
+      //       return item
+      //     }
+      //   })
+      // console.log(msgencodeArr);
       commit('UPDATE_USERSUBTITLE', {
         selectedIndex,
         msg: payload.msg,
@@ -604,7 +602,35 @@ export default new Vuex.Store({
     },
     chatcontent(state) {
       // 這裡考慮是否要做排序
-      return state.right.chatlist
+      // TODO:這裡要對 emoji 做一些特別處理。
+      const regx = /(#-EMOJI\d{1,3}EMOJI-#)/g
+      const newresult = state.right.chatlist.map(sitem => {
+        const smsg = sitem.msg.split(regx)
+          .filter(item => item !== '')
+          .map((item, index) => {
+            if (/#-EMOJI\d{1,3}EMOJI-#/g.test(item)) {
+              const image = new Image()
+              const num = item.replace(/#-EMOJI(\d{1,3})EMOJI-#/g, '$1')
+              image.src = require(`@/assets/emoji/${num}.svg`)
+              image.width = 20
+              image.classList.add('inline-block')
+              image.classList.add('select-none')
+              return {
+                key: `s_${index}`,
+                obj: image.outerHTML
+              }
+            } else {
+              const avoidXssString = item.replace(/</g, '&lt;').replace(/>/, '&gt;').replace(/"/g, '&quot;')
+              return {
+                key: `s_${index}`,
+                obj: avoidXssString
+              }
+            }
+          })
+        sitem.msg = smsg
+        return sitem
+      })
+      return newresult
     },
     tmpemoji(state) {
       return state.tmpemoji
