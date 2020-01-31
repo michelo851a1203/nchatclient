@@ -68,14 +68,8 @@ export default {
               });
             } else {
               if (contentNode.length > prevlen) {
-                // 這裡有個先決條件是 emoji 是增加的才這樣給
-                // 這裡有問題，沒錯，這裡有機會增加三個節點
                 const add = contentNode.length - prevlen;
                 if (contentNode[prevNodeNum].nodeType === Node.TEXT_NODE) {
-                  // text
-                  // 三種狀況 : 產生兩個節點 (左文字 + 右 emoji)
-                  // 三個節點 (文字 + emoji + 文字)
-                  // TODO : 處理一下 第二次增加的位置
                   const rightisemoji =
                     contentNode[prevNodeNum + add].nodeType ===
                     Node.ELEMENT_NODE;
@@ -131,27 +125,7 @@ export default {
           if (prevNodeNum === 0) {
             edit.appendChild(val);
           } else {
-            const textLen = [...edit.childNodes].filter(
-              (item, index) =>
-                index < prevNodeNum &&
-                item.nodeType == Node.TEXT_NODE &&
-                item.textCOntent !== ""
-            ).length;
-            if (
-              edit.childNodes[prevNodeNum] &&
-              edit.childNodes[prevNodeNum].nodeType === Node.TEXT_NODE
-            ) {
-              edit.insertBefore(val, edit.childNodes[prevNodeNum]);
-            } else {
-              if (textLen !== 0) {
-                edit.insertBefore(
-                  val,
-                  edit.childNodes[prevNodeNum - textLen + 1]
-                );
-              } else {
-                edit.insertBefore(val, edit.childNodes[prevNodeNum]);
-              }
-            }
+            edit.insertBefore(val, edit.childNodes[prevNodeNum]);
           }
         } else {
           const txt = edit.childNodes[prevNodeNum].textContent;
