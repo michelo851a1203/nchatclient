@@ -56,12 +56,8 @@ export default {
           const contentNode = edit.childNodes;
           const last = contentNode[contentNode.length - 1];
           if (last) {
-            // TODO:這裡 set 的位置要改一下。
-            // 改成依照最後一次 focus 的狀態
             if (currentcaret) {
-              // 代表目前新增 emoji 在最後位置
               range.setStart(edit, contentNode.length);
-              // 這裡設完後要dispatch +1
               vm.$store.dispatch("setCurrentnode", {
                 prevNodeNum: contentNode.length,
                 textNum: 0
