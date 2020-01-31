@@ -240,6 +240,26 @@ export default new Vuex.Store({
         return item.userid === state.left.userlist.selecteduserid
       })
       // 看來這裡有問題
+      console.log(payload.msg);
+      // payload.msg 這裡要處理一下 Emoji
+      const regx = /(#-EMOJI\d{1,3}EMOJI-#)/g
+      const re = /#-EMOJI(\d{1,3})EMOJI-#/g
+      const msgencodeArr = payload.msg.split(regx)
+        .filter(item => item !== '')
+        .map(item => {
+          if (regx.test(item)) {
+            const image = new Image()
+            const num = item.replace(re,'$1')
+            // TODO:這裡做一半。
+            console.log(image,num);
+          }else{
+            return item
+          }
+        })
+      console.log(msgencodeArr);
+
+
+
       commit('UPDATE_USERSUBTITLE', {
         selectedIndex,
         msg: payload.msg,
@@ -353,8 +373,6 @@ export default new Vuex.Store({
       // 這裡要留意 emoji 和 圖檔的部分
       if (state.sendmsg !== '' && state.left.userlist.selecteduserid !== -1) {
         // 關於 replyto 可以沒有。
-        // state.sendmsg 藥用代碼進行轉換。
-
         if (state.connect === true) {
           const vue = new Vue()
           vue.$socket.emit('sendMsg', {
