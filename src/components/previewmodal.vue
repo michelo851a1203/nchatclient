@@ -49,17 +49,17 @@ export default {
   methods: {
     ...mapActions(["changepreviewshow"]),
     imagerotate() {
-      const vm = this;
-      if (vm.previewimage !== "") {
-        // TODO:這裡可以考慮存 rotate
-        console.log("rotate");
-      }
+      // const vm = this;
+      // if (vm.previewimage !== "") {
+      //   // TODO:這裡可以考慮存 rotate
+      //   console.log("rotate");
+      // }
     },
     confirmpreview() {
-      const vm = this;
-      if (vm.previewuploadfile) {
-        console.log("確認");
-      }
+      // const vm = this;
+      // if (vm.previewuploadfile) {
+      //   console.log("確認");
+      // }
     }
   }
 };

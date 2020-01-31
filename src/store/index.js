@@ -202,7 +202,17 @@ export default new Vuex.Store({
       }
     },
     socket_backcontact({ commit }, payload) {
-      commit('SET_USERLIST', payload)
+      const newpayload = payload.map(item => {
+        if (!item.headimage) {
+          if (item.isCustomerService === true) {
+            item.headimage = require('@/assets/logo_black.png')
+          }else{
+            item.headimage = require('@/assets/userImg.png')
+          }
+        }
+        return item
+      })
+      commit('SET_USERLIST', newpayload)
     },
     socket_backchatlog({ commit }, payload) {
       commit('SET_CHATLIST', payload)
@@ -470,7 +480,8 @@ export default new Vuex.Store({
       return state.left.userlist.listactivestatus
     },
     userlist(state) {
-      const userlistData = state.left.userlist.userlist
+      // 如果沒發出訊息則不會顯示在最近。
+      const userlistData = state.left.userlist.userlist.filter(item => !!item.msg)
       if (userlistData.length > 0) {
         // TODO:到時候要依照時間排序，還要考慮沒有送訊息時，沒有時間排序的問題
         // 有已讀和未讀的問題。到時候要加上。

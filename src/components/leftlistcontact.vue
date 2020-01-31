@@ -20,10 +20,11 @@
             <div
               class="w-4 h-4 absolute top-0 left-0 mt-2 rounded-full bg-red-pure border-2 border-gray-500"
             ></div>
-            <div
-              class="bg-orange-500 w-16 h-16 rounded-full bg-cover bg-center"
+            <div v-if="customerserviceGroup.headimage !== require('@/assets/logo_black.png')"
+              class="bg-transparent w-16 h-16 rounded-full bg-cover bg-center"
               :style="customerserviceGroup.headimage | backgroungImage"
             ></div>
+            <img v-else style="width:2.95rem;" class="ml-2" :src="customerserviceGroup.headimage" alt="">
             <div class="self-strech ml-3 mr-auto">
               <h2
                 class="font-bold text-base text-gray-listmiddle mb-1 flex items-center"
@@ -68,7 +69,7 @@
                 class="w-4 h-4 absolute top-0 left-0 mt-2 rounded-full bg-red-pure border-2 border-gray-500"
               ></div>
               <div
-                class="bg-orange-500 w-16 h-16 rounded-full bg-cover bg-center"
+                class="bg-transparent w-16 h-16 rounded-full bg-cover bg-center"
                 :style="item.headimage | backgroungImage"
               ></div>
               <div class="self-strech ml-3 mr-auto">
@@ -121,7 +122,7 @@
                 class="w-4 h-4 absolute top-0 left-0 mt-2 rounded-full bg-red-pure border-2 border-gray-500"
               ></div>
               <div
-                class="bg-orange-500 w-16 h-16 rounded-full bg-cover bg-center"
+                class="bg-transparent w-16 h-16 rounded-full bg-cover bg-center"
                 :style="item.headimage | backgroungImage"
               ></div>
               <div class="self-strech ml-3 mr-auto">
