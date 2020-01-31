@@ -75,7 +75,7 @@ export default {
       const div = e.target;
       const vm = this;
       vm.$store.dispatch("setcurrentscrollposition", div.scrollTop);
-      if (div.scrollTop === 0) {
+      if (div.scrollTop === 0 && vm.chatcontent.length > 0) {
         vm.$store.dispatch("getPrevious",vm.chatcontent[0].id);
       }
       const contenth = vm.contentheight;

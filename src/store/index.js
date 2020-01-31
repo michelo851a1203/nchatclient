@@ -17,7 +17,14 @@ export default new Vuex.Store({
     left: {
       userlist: {
         listactivestatus: 'leftlistrecent',
-        userlist: [],
+        userlist: [
+          {
+            username: "三牛娱乐官方",
+            userid: 0,
+            headimage: null,
+            isCustomerService: true,
+          }
+        ],
         selecteduserid: -1,
       },
     },
@@ -166,6 +173,10 @@ export default new Vuex.Store({
     SET_CURRENTNODE(state, { prevNodeNum, textNum }) {
       state.currentNode.prevNodeNum = prevNodeNum
       state.currentNode.textNum = textNum
+    },
+    SET_CUSTOMSERVICEIMAGE(state, { imageUrl, officalIndex }) {
+      // 客服系統更新官方照片觸發
+      state.left.userlist.userlist[officalIndex].headimage = imageUrl
     }
   },
   actions: {
@@ -206,7 +217,7 @@ export default new Vuex.Store({
         if (!item.headimage) {
           if (item.isCustomerService === true) {
             item.headimage = require('@/assets/logo_black.png')
-          }else{
+          } else {
             item.headimage = require('@/assets/userImg.png')
           }
         }
@@ -254,6 +265,21 @@ export default new Vuex.Store({
         })
       }
       // TODO:這裡要判斷如果非本人收到且目前在最底下要回傳已讀且要棍到最底下
+    },
+    socket_customserviceImageToClient({ commit, state }, { userid, imageUrl }) {
+      if (userid === state.personaldata.id) {
+        const official = state.left.userlist.userlist.find(item => item.isCustomerService)
+        const officalIndex = state.left.userlist.userlist.findIndex(item => item.isCustomerService)
+        if (official) {
+          if (!official.headimage) {
+            commit('SET_CUSTOMSERVICEIMAGE', { imageUrl, officalIndex })
+          } else {
+            if (official.headimage !== imageUrl) {
+              commit('SET_CUSTOMSERVICEIMAGE', { imageUrl, officalIndex })
+            }
+          }
+        }
+      }
     },
     setwindowwidth({ commit, state }, width) {
       if (state.windowWidth !== width) {

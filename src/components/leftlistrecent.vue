@@ -15,11 +15,12 @@
           <div
             class="w-4 h-4 absolute top-0 left-0 mt-2 rounded-full bg-red-pure border-2 border-gray-500"
           ></div>
-          <div v-if="!item.isCustomerService || item.headimage !== require('@/assets/logo_black.png')"
+          <div
+            v-if="!item.isCustomerService || item.headimage !== require('@/assets/logo_black.png')"
             class="bg-transparent w-16 h-16 rounded-full bg-cover bg-center"
             :style="item.headimage | backgroungImage"
           ></div>
-          <img v-else style="width:2.95rem;" class="ml-2" :src="item.headimage" alt="">
+          <img v-else style="width:2.95rem;" class="ml-2" :src="item.headimage" alt />
           <div class="self-strech ml-3 mr-auto">
             <h2 class="font-bold text-base text-gray-listmiddle mb-1 flex items-center">
               <span>{{item.username}}</span>
