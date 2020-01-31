@@ -96,6 +96,7 @@ export default new Vuex.Store({
       state.right.chatlist = [...chatlist, ...state.right.chatlist]
     },
     ADD_CHATLOG(state, chatdata) {
+      console.log(chatdata);
       state.right.chatlist.push(chatdata)
     },
     UPDATE_USERSUBTITLE(state, { selectedIndex, msg, time }) {
@@ -239,25 +240,7 @@ export default new Vuex.Store({
       const selectedIndex = state.left.userlist.userlist.findIndex(item => {
         return item.userid === state.left.userlist.selecteduserid
       })
-      // 看來這裡有問題
-      // payload.msg 這裡要處理一下 Emoji
-      // const regx = /(#-EMOJI\d{1,3}EMOJI-#)/g
-      // const msgencodeArr = payload.msg.split(regx)
-      //   .filter(item => item !== '')
-      //   .map(item => {
-      //     if (/#-EMOJI\d{1,3}EMOJI-#/g.test(item)) {
-      //       const image = new Image()
-      //       const num = item.replace(/#-EMOJI(\d{1,3})EMOJI-#/g, '$1')
-      //       image.src = require(`@/assets/emoji/${num}.svg`)
-      //       image.width = 20
-      //       image.classList.add('inline-block')
-      //       image.classList.add('select-none')
-      //       return image
-      //     } else {
-      //       return item
-      //     }
-      //   })
-      // console.log(msgencodeArr);
+      payload.smsg = emojiConvert(payload.msg)
       commit('UPDATE_USERSUBTITLE', {
         selectedIndex,
         msg: payload.msg,
@@ -572,37 +555,62 @@ export default new Vuex.Store({
       return state.personaldata.usertype
     },
     customerserviceGroup(state) {
-      return state.left.userlist.userlist.find(item => {
+      const customserobj = state.left.userlist.userlist.find(item => {
         return item.isCustomerService === true
       })
+      if (customserobj.msg && customserobj.msg.msg) {
+        customserobj.msg.smsg = emojiConvert(customserobj.msg.msg)
+      }
+      return customserobj
     },
     upLineList(state) {
+      let uplist = []
       if (state.search === '') {
-        return state.left.userlist.userlist.filter(item => {
+        uplist = state.left.userlist.userlist.filter(item => {
           return item.isParent === true && Number(state.personaldata.islvtop) !== 1
         })
       } else {
         const regx = new RegExp(`${state.search}`)
-        return state.left.userlist.userlist.filter(item => {
+        uplist = state.left.userlist.userlist.filter(item => {
           return item.isParent === true && Number(state.personaldata.islvtop) !== 1 && regx.test(item.username)
         })
       }
+      if (uplist.length > 0) {
+        return uplist.map(sitem => {
+          if (sitem.msg && sitem.msg.msg) {
+            sitem.msg.smsg = emojiConvert(sitem.msg.msg)
+          }
+          return sitem
+        })
+      } else {
+        return []
+      }
     },
     underLineList(state) {
+      let underlist = []
       if (state.search === '') {
-        return state.left.userlist.userlist.filter(item => {
+        underlist = state.left.userlist.userlist.filter(item => {
           return !item.isParent && Number(state.personaldata.usertype) === 1 && !item.isCustomerService
         })
       } else {
         const regx = new RegExp(`${state.search}`)
-        return state.left.userlist.userlist.filter(item => {
+        underlist = state.left.userlist.userlist.filter(item => {
           return !item.isParent && Number(state.personaldata.usertype) === 1 && !item.isCustomerService && regx.test(item.username)
         })
+      }
+      if (underlist.length > 0) {
+        return underlist.map(sitem => {
+          if (sitem.msg && sitem.msg.msg) {
+            sitem.msg.smsg = emojiConvert(sitem.msg.msg)
+          }
+          return sitem
+        })
+      } else {
+        return []
       }
     },
     chatcontent(state) {
       // 這裡考慮是否要做排序
-      // TODO:這裡要對 emoji 做一些特別處理。
       const regx = /(#-EMOJI\d{1,3}EMOJI-#)/g
       const newresult = state.right.chatlist.map(sitem => {
         const smsg = sitem.msg.split(regx)
@@ -627,7 +635,7 @@ export default new Vuex.Store({
               }
             }
           })
-        sitem.msg = smsg
+        sitem.smsg = smsg
         return sitem
       })
       return newresult
@@ -692,3 +700,29 @@ export default new Vuex.Store({
   modules: {
   }
 })
+
+const emojiConvert = (message) => {
+  const regx = /(#-EMOJI\d{1,3}EMOJI-#)/g
+  return message.split(regx)
+    .filter(item => item !== '')
+    .map((item, index) => {
+      if (/#-EMOJI\d{1,3}EMOJI-#/g.test(item)) {
+        const image = new Image()
+        const num = item.replace(/#-EMOJI(\d{1,3})EMOJI-#/g, '$1')
+        image.src = require(`@/assets/emoji/${num}.svg`)
+        image.width = 20
+        image.classList.add('inline-block')
+        image.classList.add('select-none')
+        return {
+          key: `s_${index}`,
+          obj: image.outerHTML
+        }
+      } else {
+        const avoidXssString = item.replace(/</g, '&lt;').replace(/>/, '&gt;').replace(/"/g, '&quot;')
+        return {
+          key: `s_${index}`,
+          obj: avoidXssString
+        }
+      }
+    })
+}

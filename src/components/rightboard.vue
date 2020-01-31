@@ -23,7 +23,7 @@
         }"
         class="max-w-1/2 sm:max-w-2/3 text-sm sm:text-base rounded-lg px-3 py-2 font-medium break-all"
       >
-        <span v-for="msgitem in item.msg" :key="msgitem.key" v-html="msgitem.obj"></span>
+        <span v-for="msgitem in item.smsg" :key="msgitem.key" v-html="msgitem.obj"></span>
       </section>
       <div
         :class="{'order-1':item.is_sender,'mr-3':item.is_sender,'ml-3':!item.is_sender}"
