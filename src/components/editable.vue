@@ -59,6 +59,7 @@ export default {
             // TODO:這裡 set 的位置要改一下。
             // 改成依照最後一次 focus 的狀態
             if (currentcaret) {
+              // 代表目前新增 emoji 在最後位置
               range.setStart(edit, contentNode.length);
               // 這裡設完後要dispatch +1
               vm.$store.dispatch("setCurrentnode", {
@@ -85,10 +86,10 @@ export default {
                       textNum: 0
                     });
                   } else {
-                    range.setStart(contentNode[prevNodeNum + add], textNum);
+                    range.setStart(contentNode[prevNodeNum + 2], 0);
                     vm.$store.dispatch("setCurrentnode", {
-                      prevNodeNum: prevNodeNum + add,
-                      textNum: textNum
+                      prevNodeNum: prevNodeNum + 2,
+                      textNum: 0
                     });
                   }
                 } else {
@@ -99,7 +100,6 @@ export default {
                   });
                 }
               } else {
-                // TODO:Ok 這裡要開始處理
                 let newNodeNum = 0;
                 let newtextNum = 0;
                 if (textNum === 0 && prevNodeNum !== 0) {
