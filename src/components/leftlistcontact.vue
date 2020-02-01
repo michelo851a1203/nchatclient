@@ -20,16 +20,33 @@
             <div
               class="w-4 h-4 absolute top-0 left-0 mt-2 rounded-full bg-red-pure border-2 border-gray-500 z-50"
             ></div>
-            <div v-if="customerserviceGroup.headimage !== require('@/assets/logo_black.png')"
+            <div
+              v-if="customerserviceGroup.headimage !== require('@/assets/logo_black.png')"
               class="bg-transparent w-16 h-16 rounded-full bg-cover bg-center"
               :style="customerserviceGroup.headimage | backgroungImage"
             ></div>
-            <img v-else style="width:2.95rem;" class="ml-2" :src="customerserviceGroup.headimage" alt="">
+            <img
+              v-else
+              style="width:2.95rem;"
+              class="ml-2"
+              :src="customerserviceGroup.headimage"
+              alt
+            />
             <div class="self-strech ml-3 mr-auto">
               <h2
                 class="font-bold text-base text-gray-listmiddle mb-1 flex items-center"
               >{{customerserviceGroup.username}}</h2>
-              <span class="text-sm text-blue-leftsubtitle">{{customerserviceGroup.msg.msg}}</span>
+              <span class="text-sm text-blue-leftsubtitle">
+                <span
+                  v-if="customerserviceGroup.msg && customerserviceGroup.msg.msg && customerserviceGroup.msg.smsg"
+                >
+                  <span
+                    v-for="sitem in customerserviceGroup.msg.smsg"
+                    :key="sitem.key"
+                    v-html="sitem.obj"
+                  ></span>
+                </span>
+              </span>
             </div>
             <div class="px-4 mb-1 self-end text-xs sm:text-sm">
               <label class="text-blue-leftsubtitle" for>{{customerserviceGroup.msg.time}}</label>
@@ -76,9 +93,11 @@
                 <h2
                   class="font-bold text-base text-gray-listmiddle mb-1 flex items-center"
                 >{{item.username}}</h2>
-                <span
-                  class="text-sm text-blue-leftsubtitle"
-                >{{item.msg && item.msg.msg ? item.msg.msg : ''}}</span>
+                <span class="text-sm text-blue-leftsubtitle">
+                  <span v-if="item.msg && item.msg.msg && item.msg.smsg">
+                    <span v-for="sitem in item.msg.smsg" :key="sitem.key" v-html="sitem.obj"></span>
+                  </span>
+                </span>
               </div>
               <div class="px-4 mb-1 self-end text-xs sm:text-sm">
                 <label
@@ -129,7 +148,11 @@
                 <h2
                   class="font-bold text-base text-gray-listmiddle mb-1 flex items-center"
                 >{{item.username}}</h2>
-                <span class="text-sm text-blue-leftsubtitle">{{item.msg.msg}}</span>
+                <span class="text-sm text-blue-leftsubtitle">
+                  <span v-if="item.msg && item.msg.msg && item.msg.smsg">
+                    <span v-for="sitem in item.msg.smsg" :key="sitem.key" v-html="sitem.obj"></span>
+                  </span>
+                </span>
               </div>
               <div class="px-4 mb-1 self-end text-xs sm:text-sm">
                 <label class="text-blue-leftsubtitle" for>{{item.msg.time}}</label>
@@ -158,12 +181,12 @@ export default {
       "upLineList",
       "underLineList"
     ]),
-    countupper(){
-      return this.upLineList.length
+    countupper() {
+      return this.upLineList.length;
     },
-    countlower(){
-      return this.underLineList.length
-    },
+    countlower() {
+      return this.underLineList.length;
+    }
   },
   methods: {
     ...mapActions(["selectchattarget"])

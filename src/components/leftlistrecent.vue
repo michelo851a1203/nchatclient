@@ -27,9 +27,11 @@
               <!-- TODO:這裡考慮要從 receiveMsg 那裡取得未讀訊息 -->
               <!-- <span class="badge badge-red">12</span> -->
             </h2>
-            <span
-              class="text-sm text-blue-leftsubtitle"
-            >{{ item.msg && item.msg.msg ? item.msg.msg : ''}}</span>
+            <span class="text-sm text-blue-leftsubtitle">
+              <span v-if="item.msg && item.msg.msg && item.msg.smsg">
+                <span v-for="sitem in item.msg.smsg" :key="sitem.key" v-html="sitem.obj"></span>
+              </span>
+            </span>
           </div>
           <div class="px-4 mb-1 self-end">
             <label
