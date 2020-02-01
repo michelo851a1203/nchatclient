@@ -539,8 +539,41 @@ export default new Vuex.Store({
         if (userrecentlist.length > 0) {
           return userrecentlist.map(sitem => {
             if (sitem.msg && sitem.msg.msg) {
-              sitem.msg.smsg = emojiConvert(sitem.msg.msg)
-            } 
+              const objArr = emojiConvert(sitem.msg.msg)
+              const len = objArr.reduce((prev, next) => {
+                const prevnum = prev.letterNum ? Number(prev.letterNum) : 0
+                const nextnum = next.letterNum ? Number(next.letterNum) : 0
+                return {
+                  letterNum: prevnum + nextnum
+                }
+              })
+              const limit = 10
+              if (len <= limit) {
+                sitem.msg.smsg = objArr
+              } else {
+                let count = 0
+                let lastcount = 0
+                let usedIndex = 0
+                const lim = objArr.filter((item, index) => {
+                  count += Number(item.letterNum)
+                  if (count <= limit) {
+                    lastcount = count
+                    usedIndex = index + 1
+                  }
+                  return count <= limit
+                })
+
+                if (limit - lastcount > 0) {
+                  const diff = limit - lastcount
+                  objArr[usedIndex].obj = objArr[usedIndex].obj.slice(0, diff)
+                  sitem.msg.smsg = [...lim, objArr[usedIndex]]
+                } else {
+                  sitem.msg.smsg = lim
+                }
+                // sitem.msg.smsg = [...objArr.map((_, index) => index <= limit), '...']
+                // sitem.msg.smsg = objArr
+              }
+            }
             return sitem
           })
         } else {
@@ -580,7 +613,39 @@ export default new Vuex.Store({
         return item.isCustomerService === true
       })
       if (customserobj.msg && customserobj.msg.msg) {
-        customserobj.msg.smsg = emojiConvert(customserobj.msg.msg)
+        const objArr = emojiConvert(customserobj.msg.msg)
+        const len = objArr.reduce((prev, next) => {
+          const prevnum = prev.letterNum ? Number(prev.letterNum) : 0
+          const nextnum = next.letterNum ? Number(next.letterNum) : 0
+          return {
+            letterNum: prevnum + nextnum
+          }
+        })
+        const limit = 10
+        if (len <= limit) {
+          customserobj.msg.smsg = objArr
+        } else {
+          let count = 0
+          let lastcount = 0
+          let usedIndex = 0
+          const lim = objArr.filter((item, index) => {
+            count += Number(item.letterNum)
+            if (count <= limit) {
+              lastcount = count
+              usedIndex = index + 1
+            }
+            return count <= limit
+          })
+
+          if (limit - lastcount > 0) {
+            const diff = limit - lastcount
+            objArr[usedIndex].obj = objArr[usedIndex].obj.slice(0, diff)
+            customserobj.msg.smsg = [...lim, objArr[usedIndex]]
+          } else {
+            customserobj.msg.smsg = lim
+          }
+          // customserobj.msg.smsg = [...objArr.map((_, index) => index <= limit), '...']
+        }
       }
       return customserobj
     },
@@ -599,7 +664,39 @@ export default new Vuex.Store({
       if (uplist.length > 0) {
         return uplist.map(sitem => {
           if (sitem.msg && sitem.msg.msg) {
-            sitem.msg.smsg = emojiConvert(sitem.msg.msg)
+            const objArr = emojiConvert(sitem.msg.msg)
+            const len = objArr.reduce((prev, next) => {
+              const prevnum = prev.letterNum ? Number(prev.letterNum) : 0
+              const nextnum = next.letterNum ? Number(next.letterNum) : 0
+              return {
+                letterNum: prevnum + nextnum
+              }
+            })
+            const limit = 10
+            if (len <= limit) {
+              sitem.msg.smsg = objArr
+            } else {
+              let count = 0
+              let lastcount = 0
+              let usedIndex = 0
+              const lim = objArr.filter((item, index) => {
+                count += Number(item.letterNum)
+                if (count <= limit) {
+                  lastcount = count
+                  usedIndex = index + 1
+                }
+                return count <= limit
+              })
+
+              if (limit - lastcount > 0) {
+                const diff = limit - lastcount
+                objArr[usedIndex].obj = objArr[usedIndex].obj.slice(0, diff)
+                sitem.msg.smsg = [...lim, objArr[usedIndex]]
+              } else {
+                sitem.msg.smsg = lim
+              }
+              // sitem.msg.smsg = [...objArr.map((_, index) => index <= limit), '...']
+            }
           }
           return sitem
         })
@@ -622,7 +719,39 @@ export default new Vuex.Store({
       if (underlist.length > 0) {
         return underlist.map(sitem => {
           if (sitem.msg && sitem.msg.msg) {
-            sitem.msg.smsg = emojiConvert(sitem.msg.msg)
+            const objArr = emojiConvert(sitem.msg.msg)
+            const len = objArr.reduce((prev, next) => {
+              const prevnum = prev.letterNum ? Number(prev.letterNum) : 0
+              const nextnum = next.letterNum ? Number(next.letterNum) : 0
+              return {
+                letterNum: prevnum + nextnum
+              }
+            })
+            const limit = 10
+            if (len <= limit) {
+              sitem.msg.smsg = objArr
+            } else {
+              let count = 0
+              let lastcount = 0
+              let usedIndex = 0
+              const lim = objArr.filter((item, index) => {
+                count += Number(item.letterNum)
+                if (count <= limit) {
+                  lastcount = count
+                  usedIndex = index + 1
+                }
+                return count <= limit
+              })
+
+              if (limit - lastcount > 0) {
+                const diff = limit - lastcount
+                objArr[usedIndex].obj = objArr[usedIndex].obj.slice(0, diff)
+                sitem.msg.smsg = [...lim, objArr[usedIndex]]
+              } else {
+                sitem.msg.smsg = lim
+              }
+              // sitem.msg.smsg = [...objArr.map((_, index) => index <= limit), '...']
+            }
           }
           return sitem
         })
@@ -724,6 +853,7 @@ export default new Vuex.Store({
 
 const emojiConvert = (message) => {
   const regx = /(#-EMOJI\d{1,3}EMOJI-#)/g
+  // 這裡要順便製作計算字數的動作
   return message.split(regx)
     .filter(item => item !== '')
     .map((item, index) => {
@@ -736,13 +866,16 @@ const emojiConvert = (message) => {
         image.classList.add('select-none')
         return {
           key: `s_${index}`,
-          obj: image.outerHTML
+          obj: image.outerHTML,
+          letterNum: 1
         }
       } else {
-        const avoidXssString = item.replace(/</g, '&lt;').replace(/>/, '&gt;').replace(/"/g, '&quot;')
+        // const avoidXssString = item.replace(/</g, '&lt;').replace(/>/, '&gt;').replace(/"/g, '&quot;')
+        const avoidXssString = item
         return {
           key: `s_${index}`,
-          obj: avoidXssString
+          obj: avoidXssString,
+          letterNum: item.length
         }
       }
     })
