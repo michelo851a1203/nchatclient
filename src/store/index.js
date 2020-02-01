@@ -96,14 +96,23 @@ export default new Vuex.Store({
       state.right.chatlist = [...chatlist, ...state.right.chatlist]
     },
     ADD_CHATLOG(state, chatdata) {
-      console.log(chatdata);
       state.right.chatlist.push(chatdata)
     },
-    UPDATE_USERSUBTITLE(state, { selectedIndex, msg, time }) {
-      const msgObj = state.left.userlist.userlist[selectedIndex].msg
-      if (msgObj) {
-        msgObj.msg = msg
-        msgObj.time = time
+    UPDATE_USERSUBTITLE(state, { selectedIndex, id, is_sender, msg, time }) {
+      const userObj = state.left.userlist.userlist[selectedIndex]
+      if (userObj.msg) {
+        userObj.msg.is_sender = is_sender
+        userObj.msg.id = id
+        userObj.msg.msg = msg
+        userObj.msg.time = time
+      } else {
+        userObj.msg = {
+          is_sender: true,
+          id,
+          sender_id: state.personaldata.id,
+          msg,
+          time
+        }
       }
     },
     SET_TMPEMOJI(state, emojihtml) {
@@ -243,6 +252,8 @@ export default new Vuex.Store({
       payload.smsg = emojiConvert(payload.msg)
       commit('UPDATE_USERSUBTITLE', {
         selectedIndex,
+        id: payload.id,
+        is_sender: payload.is_sender,
         msg: payload.msg,
         time: payload.time,
       })
@@ -516,14 +527,24 @@ export default new Vuex.Store({
           const nextdate = next.msg && next.msg.time && next.msg.time !== '' ? Date.parse(next.msg.time.replace(' ', 'T')) : Date.parse(earlytime)
           return nextdate - prevdate
         })
-
+        let userrecentlist = []
         if (state.search === '') {
-          return sorData
+          userrecentlist = sorData
         } else {
           const regx = new RegExp(`${state.search}`)
-          return sorData.filter(item => {
+          userrecentlist = sorData.filter(item => {
             return regx.test(item.username)
           })
+        }
+        if (userrecentlist.length > 0) {
+          return userrecentlist.map(sitem => {
+            if (sitem.msg && sitem.msg.msg) {
+              sitem.msg.smsg = emojiConvert(sitem.msg.msg)
+            } 
+            return sitem
+          })
+        } else {
+          return []
         }
       } else {
         return []
