@@ -546,7 +546,7 @@ export default new Vuex.Store({
                 return {
                   letterNum: prevnum + nextnum
                 }
-              })
+              })['letterNum']
               const limit = 10
               if (len <= limit) {
                 sitem.msg.smsg = objArr
@@ -620,7 +620,7 @@ export default new Vuex.Store({
           return {
             letterNum: prevnum + nextnum
           }
-        })
+        })['letterNum']
         const limit = 10
         if (len <= limit) {
           customserobj.msg.smsg = objArr
@@ -671,7 +671,7 @@ export default new Vuex.Store({
               return {
                 letterNum: prevnum + nextnum
               }
-            })
+            })['letterNum']
             const limit = 10
             if (len <= limit) {
               sitem.msg.smsg = objArr
@@ -726,7 +726,7 @@ export default new Vuex.Store({
               return {
                 letterNum: prevnum + nextnum
               }
-            })
+            })['letterNum']
             const limit = 10
             if (len <= limit) {
               sitem.msg.smsg = objArr
