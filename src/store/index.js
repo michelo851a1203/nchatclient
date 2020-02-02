@@ -547,7 +547,7 @@ export default new Vuex.Store({
                   letterNum: prevnum + nextnum
                 }
               })['letterNum']
-              const limit = 10
+              const limit = 8
               if (len <= limit) {
                 sitem.msg.smsg = objArr
               } else {
@@ -566,12 +566,10 @@ export default new Vuex.Store({
                 if (limit - lastcount > 0) {
                   const diff = limit - lastcount
                   objArr[usedIndex].obj = objArr[usedIndex].obj.slice(0, diff)
-                  sitem.msg.smsg = [...lim, objArr[usedIndex]]
+                  sitem.msg.smsg = [...lim, objArr[usedIndex], '...']
                 } else {
-                  sitem.msg.smsg = lim
+                  sitem.msg.smsg = [...lim, '...']
                 }
-                // sitem.msg.smsg = [...objArr.map((_, index) => index <= limit), '...']
-                // sitem.msg.smsg = objArr
               }
             }
             return sitem
@@ -621,7 +619,7 @@ export default new Vuex.Store({
             letterNum: prevnum + nextnum
           }
         })['letterNum']
-        const limit = 10
+        const limit = 8
         if (len <= limit) {
           customserobj.msg.smsg = objArr
         } else {
@@ -640,11 +638,10 @@ export default new Vuex.Store({
           if (limit - lastcount > 0) {
             const diff = limit - lastcount
             objArr[usedIndex].obj = objArr[usedIndex].obj.slice(0, diff)
-            customserobj.msg.smsg = [...lim, objArr[usedIndex]]
+            customserobj.msg.smsg = [...lim, objArr[usedIndex], '...']
           } else {
-            customserobj.msg.smsg = lim
+            customserobj.msg.smsg = [...lim, '...']
           }
-          // customserobj.msg.smsg = [...objArr.map((_, index) => index <= limit), '...']
         }
       }
       return customserobj
@@ -672,7 +669,7 @@ export default new Vuex.Store({
                 letterNum: prevnum + nextnum
               }
             })['letterNum']
-            const limit = 10
+            const limit = 8
             if (len <= limit) {
               sitem.msg.smsg = objArr
             } else {
@@ -691,11 +688,10 @@ export default new Vuex.Store({
               if (limit - lastcount > 0) {
                 const diff = limit - lastcount
                 objArr[usedIndex].obj = objArr[usedIndex].obj.slice(0, diff)
-                sitem.msg.smsg = [...lim, objArr[usedIndex]]
+                sitem.msg.smsg = [...lim, objArr[usedIndex], '...']
               } else {
-                sitem.msg.smsg = lim
+                sitem.msg.smsg = [...lim, '...']
               }
-              // sitem.msg.smsg = [...objArr.map((_, index) => index <= limit), '...']
             }
           }
           return sitem
@@ -727,7 +723,7 @@ export default new Vuex.Store({
                 letterNum: prevnum + nextnum
               }
             })['letterNum']
-            const limit = 10
+            const limit = 8
             if (len <= limit) {
               sitem.msg.smsg = objArr
             } else {
@@ -746,11 +742,10 @@ export default new Vuex.Store({
               if (limit - lastcount > 0) {
                 const diff = limit - lastcount
                 objArr[usedIndex].obj = objArr[usedIndex].obj.slice(0, diff)
-                sitem.msg.smsg = [...lim, objArr[usedIndex]]
+                sitem.msg.smsg = [...lim, objArr[usedIndex], '...']
               } else {
-                sitem.msg.smsg = lim
+                sitem.msg.smsg = [...lim, '...']
               }
-              // sitem.msg.smsg = [...objArr.map((_, index) => index <= limit), '...']
             }
           }
           return sitem
