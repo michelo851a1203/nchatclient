@@ -367,6 +367,10 @@ export default new Vuex.Store({
         // 關於 replyto 可以沒有。
         if (state.connect === true) {
           const vue = new Vue()
+          const re = /<div><br><\/div>$/g
+          if (re.test(state.sendmsg)) {
+            state.sendmsg = state.sendmsg.replace(re, '')
+          }
           vue.$socket.emit('sendMsg', {
             touserid: state.left.userlist.selecteduserid,
             msg: state.sendmsg,
