@@ -359,7 +359,7 @@ export default new Vuex.Store({
         commit('SET_APPENDEDEMOJI', null)
       }, 0);
     },
-    sendMessage({ state }) {
+    sendMessage({ state }, payload) {
       // process : client:send > server:emit > client:receive > 
       // (get current bottom ) send readed >  change readed
       // 這裡要留意 emoji 和 圖檔的部分
@@ -367,9 +367,11 @@ export default new Vuex.Store({
         // 關於 replyto 可以沒有。
         if (state.connect === true) {
           const vue = new Vue()
-          const re = /<div><br><\/div>$/g
-          if (re.test(state.sendmsg)) {
-            state.sendmsg = state.sendmsg.replace(re, '')
+          if (payload === 'enter') {
+            const re = /<div><br><\/div>$/g
+            if (re.test(state.sendmsg)) {
+              state.sendmsg = state.sendmsg.replace(re, '')
+            }
           }
           vue.$socket.emit('sendMsg', {
             touserid: state.left.userlist.selecteduserid,

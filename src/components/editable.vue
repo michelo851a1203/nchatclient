@@ -162,7 +162,7 @@ export default {
     keyupClick(e) {
       const vm = this;
       if (e.key === "Enter") {
-        vm.$store.dispatch("sendMessage");
+        vm.$store.dispatch("sendMessage",'enter');
       } else {
         vm.getcaret();
       }
