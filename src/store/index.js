@@ -336,24 +336,8 @@ export default new Vuex.Store({
         image.width = 20
         image.classList.add('inline-block')
         commit('SET_APPENDEDEMOJI', image)
-        let sendmsgArr = state.sendmsg.split(/(#-EMOJI\d{1,3}EMOJI-#)/g).filter(item => item !== '')
-        const prevNodeNum = state.currentNode.prevNodeNum
-        const textNum = state.currentNode.textNum
-        if (textNum === 0) {
-          sendmsgArr.splice(prevNodeNum, 0, payload)
-        } else {
-          const textNode = sendmsgArr[prevNodeNum]
-          if (textNode.length === textNum) {
-            sendmsgArr.splice(prevNodeNum + 1, 0, payload)
-          } else {
-            sendmsgArr = [
-              ...sendmsgArr.filter((_, index) => index < prevNodeNum),
-              textNode.slice(0, textNum), payload, textNode.slice(textNum, textNode.length),
-              ...sendmsgArr.filter((_, index) => index > prevNodeNum)
-            ]
-          }
-        }
-        commit('SET_MESSAGE', sendmsgArr.join(''))
+        const messageresult = appendObjtoString(payload, state.sendmsg, state.currentNode.prevNodeNum, state.currentNode.textNum)
+        commit('SET_MESSAGE', messageresult)
       }
       setTimeout(() => {
         commit('SET_APPENDEDEMOJI', null)
@@ -379,6 +363,12 @@ export default new Vuex.Store({
             replyto: 0,
           })
         }
+      }
+    },
+    addpastetext({ commit, state }, payload) {
+      if (state.left.userlist.selecteduserid !== -1) {
+        const messageresult = appendObjtoString(payload, state.sendmsg, state.currentNode.prevNodeNum, state.currentNode.textNum)
+        commit('SET_MESSAGE', messageresult)
       }
     },
     setcontentheight({ commit, state }, { contentoffsettop, contentheight }) {
@@ -744,6 +734,25 @@ const emojiConvert = (message) => {
         }
       }
     })
+}
+
+const appendObjtoString = (addpayload, message, prevNodeNum, textNum) => {
+  let sendmsgArr = message.split(/(#-EMOJI\d{1,3}EMOJI-#)/g).filter(item => item !== '')
+  if (textNum === 0) {
+    sendmsgArr.splice(prevNodeNum, 0, addpayload)
+  } else {
+    const textNode = sendmsgArr[prevNodeNum]
+    if (textNode.length === textNum) {
+      sendmsgArr.splice(prevNodeNum + 1, 0, addpayload)
+    } else {
+      sendmsgArr = [
+        ...sendmsgArr.filter((_, index) => index < prevNodeNum),
+        textNode.slice(0, textNum), addpayload, textNode.slice(textNum, textNode.length),
+        ...sendmsgArr.filter((_, index) => index > prevNodeNum)
+      ]
+    }
+  }
+  return sendmsgArr.join('')
 }
 
 const filterstringAndEmoji = (sitem) => {

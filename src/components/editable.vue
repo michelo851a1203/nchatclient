@@ -6,6 +6,7 @@
     @keydown="getcaret"
     @mouseup="getcaret"
     @mousedown="getcaret"
+    @paste.prevent="pastetoText"
     class="w-10/12 px-8 py-5 fake-input focus:outline-none max-w-searchbar"
     placeholder="输入讯息...."
     contenteditable
@@ -62,6 +63,7 @@ export default {
                 prevNodeNum: contentNode.length,
                 textNum: 0
               });
+              // ?這裡要檢查一下，最後增加字數是否正確
             } else {
               if (contentNode.length > prevlen) {
                 const add = contentNode.length - prevlen;
@@ -90,17 +92,26 @@ export default {
                   });
                 }
               } else {
-                let newNodeNum = 0;
-                let newtextNum = 0;
-                if (textNum === 0 && prevNodeNum !== 0) {
-                  newNodeNum = prevNodeNum - 1;
+                const diff = val.length - oldval.length;
+                if (contentNode.length === prevlen && diff > 0) {
+                  // 這裡會增加字數代表複製貼上。
+                  vm.$store.dispatch("setCurrentnode", {
+                    prevNodeNum: prevNodeNum,
+                    textNum: textNum + diff
+                  });
                 } else {
-                  newtextNum = textNum !== 0 ? textNum - 1 : 0;
+                  let newNodeNum = 0;
+                  let newtextNum = 0;
+                  if (textNum === 0 && prevNodeNum !== 0) {
+                    newNodeNum = prevNodeNum - 1;
+                  } else {
+                    newtextNum = textNum !== 0 ? textNum - 1 : 0;
+                  }
+                  vm.$store.dispatch("setCurrentnode", {
+                    prevNodeNum: newNodeNum,
+                    textNum: newtextNum
+                  });
                 }
-                vm.$store.dispatch("setCurrentnode", {
-                  prevNodeNum: newNodeNum,
-                  textNum: newtextNum
-                });
               }
             }
             range.collapse(true);
@@ -113,31 +124,7 @@ export default {
     },
     getemojiObject(val) {
       if (val) {
-        const vm = this;
-        const edit = vm.$refs.editable;
-        const prevNodeNum = vm.editablecurrentNode.prevNodeNum;
-        const textNum = vm.editablecurrentNode.textNum;
-        if (textNum === 0) {
-          if (prevNodeNum === 0) {
-            edit.appendChild(val);
-          } else {
-            edit.insertBefore(val, edit.childNodes[prevNodeNum]);
-          }
-        } else {
-          const txt = edit.childNodes[prevNodeNum].textContent;
-          if (txt.length === textNum) {
-            edit.insertBefore(val, edit.childNodes[prevNodeNum + 1]);
-          } else {
-            const p1 = txt.slice(0, textNum);
-            const p2 = txt.slice(textNum, txt.length);
-            const text1 = document.createTextNode(p1);
-            const text2 = document.createTextNode(p2);
-            edit.insertBefore(text2, edit.childNodes[prevNodeNum]);
-            edit.insertBefore(val, edit.childNodes[prevNodeNum]);
-            edit.insertBefore(text1, edit.childNodes[prevNodeNum]);
-            edit.childNodes[prevNodeNum + 3].remove();
-          }
-        }
+        this.addobjonhtml(val);
       }
     }
   },
@@ -162,7 +149,7 @@ export default {
     keyupClick(e) {
       const vm = this;
       if (e.key === "Enter") {
-        vm.$store.dispatch("sendMessage",'enter');
+        vm.$store.dispatch("sendMessage", "enter");
       } else {
         vm.getcaret();
       }
@@ -195,6 +182,53 @@ export default {
           });
         }
       }
+    },
+    addobjonhtml(obj) {
+      const vm = this;
+      const edit = vm.$refs.editable;
+      const prevNodeNum = vm.editablecurrentNode.prevNodeNum;
+      const textNum = vm.editablecurrentNode.textNum;
+      let node = null;
+      if (typeof obj === "string") {
+        node = document.createTextNode(obj);
+      } else {
+        node = obj;
+      }
+
+      if (textNum === 0) {
+        if (prevNodeNum === 0) {
+          edit.appendChild(node);
+        } else {
+          edit.insertBefore(node, edit.childNodes[prevNodeNum]);
+        }
+      } else {
+        const txt = edit.childNodes[prevNodeNum].textContent;
+        if (typeof obj === "string") {
+          const p1 = txt.slice(0, textNum);
+          const p2 = txt.slice(textNum, txt.length);
+          edit.childNodes[prevNodeNum].textContent = `${p1}${obj}${p2}`;
+        } else {
+          if (txt.length === textNum) {
+            edit.insertBefore(obj, edit.childNodes[prevNodeNum + 1]);
+          } else {
+            const p1 = txt.slice(0, textNum);
+            const p2 = txt.slice(textNum, txt.length);
+            const text1 = document.createTextNode(p1);
+            const text2 = document.createTextNode(p2);
+            edit.insertBefore(text2, edit.childNodes[prevNodeNum]);
+            edit.insertBefore(obj, edit.childNodes[prevNodeNum]);
+            edit.insertBefore(text1, edit.childNodes[prevNodeNum]);
+            edit.childNodes[prevNodeNum + 3].remove();
+          }
+        }
+      }
+    },
+    pastetoText(e) {
+      // 這裡要直接把 HTML 加入。
+      const vm = this;
+      const cliptext = e.clipboardData.getData("Text");
+      vm.addobjonhtml(cliptext);
+      vm.$store.dispatch("addpastetext", cliptext);
     }
   },
   mounted() {
