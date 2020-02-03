@@ -5,7 +5,7 @@ import VueSocketIO from 'vue-socket.io'
 
 Vue.use(new VueSocketIO({
   debug: false,
-  connection: 'http://localhost:3000',
+  connection: 'http://localhost:3021',
   vuex: {
     store,
     actionPrefix: 'socket_',
